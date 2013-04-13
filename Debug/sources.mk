@@ -13,6 +13,8 @@ EXECUTABLES :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+so-nivel-gui-library/nivel-gui-test \
+so-nivel-gui-library/nivel-gui \
 . \
 Collections \
 
