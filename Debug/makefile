@@ -8,8 +8,6 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
--include so-nivel-gui-library/nivel-gui-test/subdir.mk
--include so-nivel-gui-library/nivel-gui/subdir.mk
 -include Collections/subdir.mk
 -include subdir.mk
 -include objects.mk
