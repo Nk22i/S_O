@@ -50,7 +50,7 @@ int main(void){
 
 	////ASOCIO LOS FD DE LA CONEXION MAESTRA
 	event.data.fd = sockfd;
-	event.events = EPOLLIN | EPOLLET;
+	event.events = EPOLLIN | EPOLLET | EPOLLRDHUP;
 
 	////ASIGNO EL CCONTROL DE EPOLL
 	if ((epoll_ctl (instancia_epoll, EPOLL_CTL_ADD, sockfd, &event)) == -1) {
@@ -73,10 +73,10 @@ int main(void){
 			for (i = 0; i < n; i++)
 			{
 				//// SI EL EVENTO QUE ESTOY MIRANDO DIO ERROR O NO ESTA LISTO PARA SER LEIDO
-				if ((events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP) || (!(events[i].events & EPOLLIN))) {
+				if ((events[i].events & EPOLLERR) || (events[i].events & EPOLLRDHUP) || (events[i].events & EPOLLHUP) || (!(events[i].events & EPOLLIN))) {
 				          fprintf (stderr, "epoll error\n");
 				          //CIERRO EL EVENTO
-					      close (events[i].data.fd);
+				          Cerrar_Conexion(events[i].data.fd);
 					      continue;
 				}
 
@@ -153,14 +153,14 @@ int main(void){
 							//LEI TODOS
 							if (errno != EAGAIN){
 								perror ("read");
-								//done = 1;
+								done=1;
 							}
 							break;
 						}
 						else if (count == 0)
 						{
 							//EL CLIENTE CERRO CONEXION
-							done = 1;
+							done=1;
 							break;
 						}
 
@@ -170,6 +170,10 @@ int main(void){
 							perror ("write");
 							abort ();
 						}
+
+						//Respondo
+						send(events[i].data.fd, "Gracias por comunicarse", 23, 0);
+
 
 					}
 					//SI TERMINE CIERRO CONEXION
